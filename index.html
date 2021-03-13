@@ -65,6 +65,33 @@
     <p id="streamres3"></p>
 	
 	
-	
 
+<div>
+	  <p><b>UUID панели</b><br>
+  <input id="uuid" />
+	  <button onclick="endpoint()">Установить эндпоинты калитки</button>
+</div>
+ <script>
 
+ function endpoint(){
+var UUID = document.getElementById("uuid").value;
+URL url = new URL("https://api.sputnik.systems/api/v1/account/devices/intercoms/+UUID");
+HttpURLConnection http = (HttpURLConnection)url.openConnection();
+http.setRequestMethod("PATCH");
+http.setDoOutput(true);
+http.setRequestProperty("Accept", "application/json");
+http.setRequestProperty("Authorization", "Bearer 88e1abe7.eyJhbGciOiJIUzI1NiJ9.eyJlbnRpdHlfdXVpZCI6IjExNjkiLCJlbnRpdHlfdHlwZSI6InVzZXIiLCJlbnRpdHlfcmVmX3V1aWQiOiJiMTc4MmU0Zi05MTk4LTQ5ZDEtYjVhYS03YmRiYTljODdkMjEiLCJlbnRpdHlfbmFtZSI6bnVsbCwic2FsdCI6Ijg4ZTFhYmU3In0.F0XBk0oipaFKodrq-lbSM2EqyiOlerj5ID1Cy-SAb4k");
+http.setRequestProperty("Content-Type", "application/json");
+
+String data = "{\n\"boot_uri\": \"fs.dev.sputnik.systems\",\n\"websocket_url\": \"cws.dev.sputnik.systems:80\",\n\"config_url\": \"cs.dev.sputnik.systems:80\",\n\"sounds_url\": \"fs.dev.sputnik.systems:80\"\n}";
+
+byte[] out = data.getBytes(StandardCharsets.UTF_8);
+
+OutputStream stream = http.getOutputStream();
+stream.write(out);
+
+System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+http.disconnect();
+}
+				
+</script>	
