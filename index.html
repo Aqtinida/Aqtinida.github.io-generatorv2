@@ -1,4 +1,22 @@
+<head>
+<style type="text/css">
 
+div.wrapper {
+width:100%;
+}
+div.left_block {
+float:left;
+width:40%;
+}
+div.right_block {
+float:right;
+width:60%;
+}
+</style>
+</head>
+
+<div class="wrapper">
+<div class="left_block">
 	
 	<div> 
    <p><b>Дата и время начала выгрузки*</b><br>
@@ -63,35 +81,274 @@
   <p id="streamres2"></p>
   <p><b>Результат по местному времени</b><br>
     <p id="streamres3"></p>
+   <textarea name="comment" cols="40" rows="3"></textarea></p>	
 	
 	
+	
+	</br>
+	</br>
+	  <p><b>Ссылка на эндпоинт, номер панели</b><br>
+   <input id="endpoint" />
+	 <script>
+	  
+	function endpoint(){
+	var endpoint1 = "http://cs.dev.sputnik.systems/api/sputnik/v1/config?id=";
+	var endpoint2 = document.getElementById("endpoint").value;
+	
+	var endpointres = endpoint1+endpoint2;
+		  
+		  document.getElementById("endpointr").innerHTML = endpointres;
+	}
+	</script>
+	  
+<button onclick="endpoint()">Ссылка на энпоинт</button>
+	  <p><b>Ссылка на проверку эндпоинта</b><br>
+    <p id="endpointr"></p>
 
+<div>
+	  <p><b>Если эндпоинты не изменились или потоки не создались, идём сюда  <p><a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">ССЫЛКА</a></p> и нажимаем кнопку Request temporary access to the demo server
+		  <br>
+		  После чего делаем запрос ещё раз.</b><br></div>
+
+<div>
+	  <p><b>UUID потока</b><br>
+  <input id="potok" />
+		  <div>	 
+<button onclick="createpotok()">Создать поток</button>	</div>
+	  <div>	 
+<button onclick="deletepotok()">Удалить поток</button>	</div>
 <div>
 	  <p><b>UUID панели</b><br>
   <input id="uuid" />
-	  <button onclick="endpoint()">Установить эндпоинты калитки</button>
+<div>	 
+<button onclick="cwsendpoint()">Установить эндпоинты калитки</button>	</div>
+<div>
+	<button onclick="ntkendpoint()">Установить эндпоинты новотелеком</button>	</div>
+<div>
+	<button onclick="ourendpoint()">Установить наши эндпоинты</button>	  </div>
+		  
 </div>
  <script>
 
- function endpoint(){
+ function cwsendpoint(){
+var corsd = "https://cors-anywhere.herokuapp.com/";
 var UUID = document.getElementById("uuid").value;
-URL url = new URL("https://api.sputnik.systems/api/v1/account/devices/intercoms/+UUID");
-HttpURLConnection http = (HttpURLConnection)url.openConnection();
-http.setRequestMethod("PATCH");
-http.setDoOutput(true);
-http.setRequestProperty("Accept", "application/json");
-http.setRequestProperty("Authorization", "Bearer 88e1abe7.eyJhbGciOiJIUzI1NiJ9.eyJlbnRpdHlfdXVpZCI6IjExNjkiLCJlbnRpdHlfdHlwZSI6InVzZXIiLCJlbnRpdHlfcmVmX3V1aWQiOiJiMTc4MmU0Zi05MTk4LTQ5ZDEtYjVhYS03YmRiYTljODdkMjEiLCJlbnRpdHlfbmFtZSI6bnVsbCwic2FsdCI6Ijg4ZTFhYmU3In0.F0XBk0oipaFKodrq-lbSM2EqyiOlerj5ID1Cy-SAb4k");
-http.setRequestProperty("Content-Type", "application/json");
+var apilink = "https://api.sputnik.systems/api/v1/account/devices/intercoms/";
+var cwslink = corsd+apilink+UUID;
+var url = cwslink;
 
-String data = "{\n\"boot_uri\": \"fs.dev.sputnik.systems\",\n\"websocket_url\": \"cws.dev.sputnik.systems:80\",\n\"config_url\": \"cs.dev.sputnik.systems:80\",\n\"sounds_url\": \"fs.dev.sputnik.systems:80\"\n}";
+var xhr = new XMLHttpRequest();
+xhr.open("PATCH", url);
 
-byte[] out = data.getBytes(StandardCharsets.UTF_8);
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("Authorization", "Bearer token");
+xhr.setRequestHeader("Content-Type", "application/json");
 
-OutputStream stream = http.getOutputStream();
-stream.write(out);
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
 
-System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
-http.disconnect();
+var data = `{
+"boot_uri": "fs.dev.sputnik.systems",
+"websocket_url": "cws.dev.sputnik.systems:80",
+"config_url": "cs.dev.sputnik.systems:80",
+"sounds_url": "fs.dev.sputnik.systems:80"
+}`;
+
+xhr.send(data);
+	 
+setTimeout(function() {
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var UUID = document.getElementById("uuid").value;
+var apilink = "https://api.sputnik.systems/api/v1/account/devices/intercoms/";
+var rebo = "/reset";
+var resetintercom = corsd+apilink+UUID+rebo;
+var url = resetintercom;
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", url);
+
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("Authorization", "Bearer token");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+xhr.send();
+	}, 10000);
+
 }
 				
 </script>	
+
+ <script>
+
+ function ntkendpoint(){
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var UUID = document.getElementById("uuid").value;
+var apilink = "https://api.sputnik.systems/api/v1/account/devices/intercoms/";
+var ntklink = corsd+apilink+UUID;
+var url = ntklink;
+
+var xhr = new XMLHttpRequest();
+xhr.open("PATCH", url);
+
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("Authorization", "Bearer token");
+xhr.setRequestHeader("Content-Type", "application/json");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+var data = `{
+"boot_uri": "fs.sputnik.systems.novotelecom.ru",
+"websocket_url": "ws.sputnik.systems.novotelecom.ru:81",
+"config_url": "cs.sputnik.systems.novotelecom.ru:82",
+"sounds_url": "fs.sputnik.systems.novotelecom.ru"
+}`;
+
+xhr.send(data);
+	 
+	 setTimeout(function() {
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var UUID = document.getElementById("uuid").value;
+var apilink = "https://api.sputnik.systems/api/v1/account/devices/intercoms/";
+var rebo = "/reset";
+var resetintercom = corsd+apilink+UUID+rebo;
+var url = resetintercom;
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", url);
+
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("Authorization", "Bearer token");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+xhr.send();
+	}, 10000);
+
+}
+				
+</script>
+
+ <script>
+
+ function ourendpoint(){
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var UUID = document.getElementById("uuid").value;
+var apilink = "https://api.sputnik.systems/api/v1/account/devices/intercoms/";
+var wslink = corsd+apilink+UUID;
+var url = wslink;
+
+var xhr = new XMLHttpRequest();
+xhr.open("PATCH", url);
+
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("Authorization", "Bearer token");
+xhr.setRequestHeader("Content-Type", "application/json");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+var data = `{
+"boot_uri": "fs.dev.sputnik.systems",
+"websocket_url": "ws.dev.sputnik.systems:80",
+"config_url": "cs.dev.sputnik.systems:80",
+"sounds_url": "fs.dev.sputnik.systems:80"
+}`;
+
+xhr.send(data);
+	 
+ setTimeout(function() {
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var UUID = document.getElementById("uuid").value;
+var apilink = "https://api.sputnik.systems/api/v1/account/devices/intercoms/";
+var rebo = "/reset";
+var resetintercom = corsd+apilink+UUID+rebo;
+var url = resetintercom;
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", url);
+
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("Authorization", "Bearer token");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+xhr.send();
+	}, 10000);	 
+}
+				
+</script>
+
+
+
+<script>
+	function createpotok(){
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var potokv = document.getElementById("potok").value;
+var apilink = "http://sm.dev.sputnik.systems/stream/";
+var crepotok = corsd+apilink+potokv;
+var url = crepotok;
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", url);
+
+xhr.setRequestHeader("Accept", "application/json");
+xhr.setRequestHeader("x-sm-token", "token");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+xhr.send();
+	}
+	</script>
+<script>
+		function deletepotok(){
+var corsd = "https://cors-anywhere.herokuapp.com/";
+var potokv = document.getElementById("potok").value;
+var apilink = "http://sm.dev.sputnik.systems/stream/";
+var crepotok = corsd+apilink+potokv;
+var url = crepotok;
+
+var xhr = new XMLHttpRequest();
+xhr.open("DELETE", url);
+
+xhr.setRequestHeader("x-sm-token", "token");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+   }};
+
+xhr.send();
+}
+	</script>
+
+
+</div>	
+</div>	
